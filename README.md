@@ -228,6 +228,85 @@ yang didapatkan apakah satu jenis kucing lebih panjang dari yang lain?
 Jelaskan.
 F. Visualisasikan data dengan ggplot2
 
+### A.
+Buatlah masing masing jenis spesies menjadi 3 subjek "Grup" (grup 1,grup
+2,grup 3). Lalu Gambarkan plot kuantil normal untuk setiap kelompok dan
+lihat apakah ada outlier utama dalam homogenitas varians.
+``` 
+Setuju
+```
+### A.
+Buatlah masing masing jenis spesies menjadi 3 subjek "Grup" (grup 1,grup
+2,grup 3). Lalu Gambarkan plot kuantil normal untuk setiap kelompok dan
+lihat apakah ada outlier utama dalam homogenitas varians.
+``` 
+myFile  <- read.table(url("https://rstatisticsandresearch.weebly.com/uploads/1/0/2/6/1026585/onewayanova.txt")) 
+dim(myFile)
+head(myFile)
+```
+Peniliti sedang menilite sepesies dari kucing yang ada di ITS, kucing-kucing terebut memiliki 3 spesies yaitu : kucing oren, kucing hitam, dan kucing putih. Dataset kucing itu didapat dari  https://intip.in/datasetprobstat1. Buatlah masing masing jenis spesies menjadi 3 subjek "Grup" (grup 1,grup 2,grup 3). Lalu Gambarkan plot kuantil normal untuk setiap kelompok dan lihat apakah ada outlier utama dalam homogenitas varians. Langkah pertama mengambil data dari link yang telah disediadakan kemudian data-data file tersebut dibuat menjadi sebuah group
+
+![Picture24](https://user-images.githubusercontent.com/71111983/170877925-29da8a3c-a46c-47b0-8950-0e6597090208.png)
+
+Kemudian untuk melanjutnya kita akan membuat myFile atau data tersebut kedalam sbuah group
+``` 
+myFile$Group <- as.factor(myFile$Group)
+myFile$Group = factor(myFile$Group,labels = c("Kucing Oren","Kucing Hitam","Kucing Putih"))
+```
+
+Setelah itu, dicek apakah dia menyimpan nilai di groupnya
+``` 
+class(myFile$Group)
+```
+
+Kemudian bagi kedalam tiap group, yang terdiri dari 3 bagian. yang memiliki nama Kucing Oren, Kucing Hitam, Kucing Putih
+```
+group1 <- subset(myFile, Group=="Kucing Oren")
+group2 <- subset(myFile, Group=="Kucing Hitam")
+group3 <- subset(myFile, Group=="Kucing Putih")
+```
+
+### B.
+carilah atau periksalah Homogeneity of variances nya , Berapa nilai p yang
+didapatkan? , Apa hipotesis dan kesimpulan yang dapat diambil ?
+``` 
+bartlett.test(Length~Group, data=dataoneway)
+```
+untuk mendapatkan Homogeneity of variancenya , p, dan kseimpulannya kita akan menggunakan fungsi bartlett.test. Dimana  menguji in- terdependensi antara variabel-variabel yang menjadi indi- kator suatu faktor oleh karena itu kita akan mendapatkan nilai p-value sebesar 0.8054 dan Kesimpulan yang didapatkan yaitu Bartlett's K-squared memiliki nilai sebesar 0.43292 dan df bernilai 2
+
+### C.
+Untuk uji ANOVA (satu arah), buatlah model linier dengan Panjang versus
+Grup dan beri nama model tersebut model 1.
+``` 
+qqnorm(group1$Length)
+qqline(group1$Length)
+```
+![Picture25](https://user-images.githubusercontent.com/71111983/170878301-175a3b1f-1288-431c-8430-da8d6c50eb8b.png)
+
+### D.
+Dari Hasil Poin C, Berapakah nilai-p ? , Apa yang dapat Anda simpulkan
+dari H0?
+``` 
+p-value = 0.8054
+```
+maka Probabilitas (p-value) > 0,05 maka h0 diterima
+
+### E.
+Verifikasilah jawaban model 1 dengan Post-hoc test Tukey HSD, dari nilai p
+yang didapatkan apakah satu jenis kucing lebih panjang dari yang lain?
+Jelaskan.
+``` 
+model <- lm(Length~Group, data = oneWayData)
+anova(model)
+TukeyHSD(aov(model))
+```
+
+### F.
+Visualisasikan data dengan ggplot2
+``` 
+library(ggplot2)
+ggplot(dataoneway, aes(x = Group, y = Length)) + geom_boxplot(fill = "grey80", colour = "black") + scale_x_discrete() + xlab("Treatment Group") +  ylab("Length (cm)")
+```
 
 ***
 ## **Soal 5**
